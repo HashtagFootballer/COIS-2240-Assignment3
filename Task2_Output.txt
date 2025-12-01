@@ -1,0 +1,28 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red235\green235\blue235;}
+{\*\expandedcolortbl;;\csgenericrgb\c92157\c92157\c92157;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf2 Testing license plate validation...\cf0 \
+\cf2 \uc0\u10003  AAA100 - Valid plate accepted\cf0 \
+\cf2 \uc0\u10003  ABC567 - Valid plate accepted\cf0 \
+\cf2 \uc0\u10003  ZZZ999 - Valid plate accepted\cf0 \
+\cf2 \uc0\u10003  Empty string - Correctly rejected\cf0 \
+\cf2 \uc0\u10003  Null - Correctly rejected\cf0 \
+\cf2 \uc0\u10003  AAA1000 (too long) - Correctly rejected\cf0 \
+\cf2 \uc0\u10003  ZZZ99 (too short) - Correctly rejected\cf0 \
+\cf2 \uc0\u10003  License plate correctly remains null after invalid attempts\cf0 \
+\cf2 Testing rent/return vehicle...\cf0 \
+\cf2 \uc0\u10003  Vehicle initial status: Available\cf0 \
+\cf2 Vehicle rented to Test Customer\cf0 \
+\cf2 \uc0\u10003  First rental successful, status: Rented\cf0 \
+\cf2 Vehicle is not available for renting.\cf0 \
+\cf2 \uc0\u10003  Second rental correctly failed, status: Rented\cf0 \
+\cf2 Vehicle returned by Test Customer\cf0 \
+\cf2 \uc0\u10003  First return successful, status: Available\cf0 \
+\cf2 Vehicle is not rented.\cf0 \
+\cf2 \uc0\u10003  Second return correctly failed, status: Available\cf0 \
+}
