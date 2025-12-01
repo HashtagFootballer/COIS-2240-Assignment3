@@ -5,7 +5,7 @@ import java.io.*;
 import java.nio.file.*; 
 
 public class RentalSystem {
-	private static RentalSystem instance; //added to reflect singleton design
+	private static RentalSystem instance; //added to reflect singleton design task 1.1
     private List<Vehicle> vehicles = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
@@ -94,24 +94,37 @@ public class RentalSystem {
             System.out.println("Error loading rental records from file: " + e.getMessage());
         }
     }
-    //unchanged from here
+    
+    
+    
     public static RentalSystem getInstance() { //the new method
         if (instance == null) {
             instance = new RentalSystem();
         }
         return instance; //returns a single instance of the class
     }
-
-    public void addVehicle(Vehicle vehicle) {
+//edited for task 1.4
+    public boolean addVehicle(Vehicle vehicle) {
+    	// Check for duplicate license plate
+        if (findVehicleByPlate(vehicle.getLicensePlate()) != null) {
+            return false; // Step 1.4: Return false if duplicate 
+    }
         vehicles.add(vehicle);
         saveVehicle(vehicle);
-        
+        return true; // Step 1.4: Return true if successful
     }
 
-    public void addCustomer(Customer customer) {
+    public boolean addCustomer(Customer customer) {
+    	// Check for duplicate customer ID
+        if (findCustomerById(customer.getCustomerId()) != null) {
+            return false; // Step 1.4: Return false if duplicate found
+        }
+        
         customers.add(customer);
         saveCustomer(customer);
+        return true; // Step 1.4: Return true if successful
     }
+
 
     public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
         if (vehicle.getStatus() == Vehicle.VehicleStatus.Available) {
