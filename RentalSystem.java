@@ -3,9 +3,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class RentalSystem {
+	private static RentalSystem instance; //added to reflect singleton design
     private List<Vehicle> vehicles = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
+    
+    private RentalSystem() { //added to reflect singleton design (empty constructor)
+    }
+   
+    public static RentalSystem getInstance() { //the new method
+        if (instance == null) {
+            instance = new RentalSystem();
+        }
+        return instance; //returns a single instance of the class
+    }
 
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
