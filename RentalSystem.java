@@ -2,6 +2,7 @@ import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.io.*;
+import java.nio.file.*; 
 
 public class RentalSystem {
 	private static RentalSystem instance; //added to reflect singleton design
@@ -10,8 +11,90 @@ public class RentalSystem {
     private RentalHistory rentalHistory = new RentalHistory();
     
     private RentalSystem() { //added to reflect singleton design (empty constructor)
+    	loadData(); // added for task 1.3
     }
-   
+    //all following code is for task 1.3
+    private void loadData() {
+        loadVehicles();
+        loadCustomers();
+        loadRentalRecords();
+    }
+    private void loadVehicles() {
+        try {
+            if (!Files.exists(Paths.get("vehicles.txt"))) {
+                return; // File doesn't exist, nothing to load
+            }
+            
+            List<String> lines = Files.readAllLines(Paths.get("vehicles.txt"));
+            for (String line : lines) {
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    String licensePlate = parts[0];
+                    String make = parts[1];
+                    String model = parts[2];
+                    int year = Integer.parseInt(parts[3]);
+                    Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(parts[4]);
+                    
+                    // Create a basic Car (simplified for loading - in real system you'd store vehicle type)
+                    Car vehicle = new Car(make, model, year, 5); // Default seats
+                    vehicle.setLicensePlate(licensePlate);
+                    vehicle.setStatus(status);
+                    vehicles.add(vehicle);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading vehicles from file: " + e.getMessage());
+        }
+    }
+    private void loadCustomers() {
+        try {
+            if (!Files.exists(Paths.get("customers.txt"))) {
+                return; // File doesn't exist, nothing to load
+            }
+            
+            List<String> lines = Files.readAllLines(Paths.get("customers.txt"));
+            for (String line : lines) {
+                String[] parts = line.split(",");
+                if (parts.length >= 2) {
+                    int customerId = Integer.parseInt(parts[0]);
+                    String name = parts[1];
+                    customers.add(new Customer(customerId, name));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading customers from file: " + e.getMessage());
+        }
+    }
+    private void loadRentalRecords() {
+        try {
+            if (!Files.exists(Paths.get("rental_records.txt"))) {
+                return; // File doesn't exist, nothing to load
+            }
+            
+            List<String> lines = Files.readAllLines(Paths.get("rental_records.txt"));
+            for (String line : lines) {
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    String licensePlate = parts[0];
+                    int customerId = Integer.parseInt(parts[1]);
+                    LocalDate recordDate = LocalDate.parse(parts[2]);
+                    double totalAmount = Double.parseDouble(parts[3]);
+                    String recordType = parts[4];
+                    
+                    Vehicle vehicle = findVehicleByPlate(licensePlate);
+                    Customer customer = findCustomerById(customerId);
+                    
+                    if (vehicle != null && customer != null) {
+                        RentalRecord record = new RentalRecord(vehicle, customer, recordDate, totalAmount, recordType);
+                        rentalHistory.addRecord(record);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading rental records from file: " + e.getMessage());
+        }
+    }
+    //unchanged from here
     public static RentalSystem getInstance() { //the new method
         if (instance == null) {
             instance = new RentalSystem();
