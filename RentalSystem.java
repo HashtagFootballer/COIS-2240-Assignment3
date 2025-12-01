@@ -1,6 +1,7 @@
 import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.io.*;
 
 public class RentalSystem {
 	private static RentalSystem instance; //added to reflect singleton design
@@ -20,10 +21,13 @@ public class RentalSystem {
 
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
+        saveVehicle(vehicle);
+        
     }
 
     public void addCustomer(Customer customer) {
         customers.add(customer);
+        saveCustomer(customer);
     }
 
     public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
@@ -31,6 +35,9 @@ public class RentalSystem {
             vehicle.setStatus(Vehicle.VehicleStatus.Rented);
             rentalHistory.addRecord(new RentalRecord(vehicle, customer, date, amount, "RENT"));
             System.out.println("Vehicle rented to " + customer.getCustomerName());
+            RentalRecord record = new RentalRecord(vehicle, customer, date, amount, "RENT");
+            rentalHistory.addRecord(record);
+            saveRecord(record);
         }
         else {
             System.out.println("Vehicle is not available for renting.");
@@ -42,6 +49,9 @@ public class RentalSystem {
             vehicle.setStatus(Vehicle.VehicleStatus.Available);
             rentalHistory.addRecord(new RentalRecord(vehicle, customer, date, extraFees, "RETURN"));
             System.out.println("Vehicle returned by " + customer.getCustomerName());
+            RentalRecord record = new RentalRecord(vehicle, customer, date, extraFees, "RETURN");
+            rentalHistory.addRecord(record);
+            saveRecord(record);
         }
         else {
             System.out.println("Vehicle is not rented.");
@@ -131,5 +141,44 @@ public class RentalSystem {
             if (c.getCustomerId() == id)
                 return c;
         return null;
+    }
+    //Added code for task 1.2
+ // Save vehicle to file (called inside addVehicle)
+    private void saveVehicle(Vehicle vehicle) {
+        try {
+            FileWriter writer = new FileWriter("vehicles.txt", true);
+            writer.write(vehicle.getLicensePlate() + "," + vehicle.getMake() + "," + 
+                        vehicle.getModel() + "," + vehicle.getYear() + "," + 
+                        vehicle.getStatus() + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving vehicle: " + e.getMessage());
+        }
+    }
+
+    // Save customer to file (called inside addCustomer)
+    private void saveCustomer(Customer customer) {
+        try {
+            FileWriter writer = new FileWriter("customers.txt", true);
+            writer.write(customer.getCustomerId() + "," + customer.getCustomerName() + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving customer: " + e.getMessage());
+        }
+    }
+
+    // Save rental record to file (called in rentVehicle and returnVehicle)
+    private void saveRecord(RentalRecord record) {
+        try {
+            FileWriter writer = new FileWriter("rental_records.txt", true);
+            writer.write(record.getVehicle().getLicensePlate() + "," + 
+                        record.getCustomer().getCustomerId() + "," + 
+                        record.getRecordDate() + "," + 
+                        record.getTotalAmount() + "," + 
+                        record.getRecordType() + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving rental record: " + e.getMessage());
+        }
     }
 }
